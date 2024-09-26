@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  txapo_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    networks:
+      - faturize_api_network
+
+networks:
+  faturize_api_network:
+    driver: bridge
+      
