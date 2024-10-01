@@ -10,6 +10,6 @@ public class WeatherForecastController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<string>> Get()
     {
-        return Ok("Ola, Bruno Simbine!!");
+        return Ok("Ola, Bruno Domingos Arlindo Simbine!!");
     }
 }
