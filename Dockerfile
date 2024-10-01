@@ -1,15 +1,15 @@
 # Learn about building .NET container images:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
-ARG TARGETARCH
+
 
 # copy csproj and restore as distinct layers
 COPY *.csproj .
-RUN dotnet restore -a $TARGETARCH
+RUN dotnet restore 
 
 # copy and publish app and libraries
 COPY . .
-RUN dotnet publish --no-restore -a $TARGETARCH -o /app
+RUN dotnet publish --no-restore -o /app
 
 
 # Enable globalization and time zones:
