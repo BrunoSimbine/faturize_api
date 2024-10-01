@@ -1,19 +1,24 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
-WORKDIR /app
-    
-# Copy csproj and restore as distinct layers
-COPY *.csproj ./
-RUN dotnet restore
-    
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o out
-    
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
-WORKDIR /app
-COPY --from=build-env /app/out .
+# Learn about building .NET container images:
+# https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+ARG TARGETARCH
 
+# copy csproj and restore as distinct layers
+COPY *.csproj .
+RUN dotnet restore -a $TARGETARCH
+
+# copy and publish app and libraries
+COPY . .
+RUN dotnet publish --no-restore -a $TARGETARCH -o /app
+
+
+# Enable globalization and time zones:
+# https://github.com/dotnet/dotnet-docker/blob/main/samples/enable-globalization.md
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
 EXPOSE 80
-
-ENTRYPOINT ["dotnet", "faturize_api.dll"]
+WORKDIR /app
+COPY --from=build /app .
+# Uncomment to enable non-root user
+# USER $APP_UID
+ENTRYPOINT ["./faturize_api"]
