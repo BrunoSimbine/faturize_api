@@ -1,5 +1,5 @@
 services:
-  faturize_api:
+  faturize_api_app:
     build:
       context: .
       dockerfile: Dockerfile
